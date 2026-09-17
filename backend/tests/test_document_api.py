@@ -24,7 +24,7 @@ class DocumentAPITests(unittest.TestCase):
             patch.dict(
                 os.environ, {"DOCUMENTS_DB_PATH": str(Path(directory) / "documents.db")}
             ),
-            patch("app.main.read_pdf_diagnostics", return_value=(1, 0, 0)),
+            patch("app.main.read_page_count", return_value=1),
             patch(
                 "app.main.run_hybrid", new=AsyncMock(return_value=hybrid_result)
             ) as analyze,
@@ -33,7 +33,7 @@ class DocumentAPITests(unittest.TestCase):
 
             def upload(force=False):
                 return client.post(
-                    "/ai/pdf?method=hybrid",
+                    "/ai/document?method=hybrid",
                     files={"file": ("보고서.pdf", b"pdf-content", "application/pdf")},
                     data={"force": str(force).lower()},
                 )

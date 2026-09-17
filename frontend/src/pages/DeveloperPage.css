@@ -331,6 +331,8 @@
 }
 
 .line-numbers {
+  display: flex;
+  flex-direction: column;
   padding: 19px 11px;
   color: #6f756e;
   border-right: 1px solid #383c3b;

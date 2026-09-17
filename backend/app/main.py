@@ -127,6 +127,7 @@ async def read_ground_truth(ground_truth: UploadFile) -> str:
 async def document_summary(
     file: UploadFile = File(...),
     ground_truth: UploadFile | None = File(None),
+    force: bool = Form(False),
     method: Literal["hybrid", "vlm"] = Query(
         "hybrid",
         description=(
@@ -226,7 +227,7 @@ async def document_summary(
     extraction_time_ms = round((time.perf_counter() - started_at) * 1000, 2)
     response_method = "text" if extension in PLAIN_TEXT_EXTENSIONS else method
 
-    return PDFSummaryResponse(
+    stored_response = PDFSummaryResponse(
         filename=filename,
         extraction_time_ms=extraction_time_ms,
         page_count=page_count,

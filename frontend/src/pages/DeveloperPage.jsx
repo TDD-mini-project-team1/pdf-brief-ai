@@ -18,6 +18,9 @@ const formatCharacterCount = (count) =>
 
 const formatExtractionMethod = (method) => {
   if (!method) return "—";
+  if (method === "pypdf" || method.startsWith("text |")) {
+    return "기본 텍스트 추출";
+  }
   return "OCR";
 };
 
@@ -42,6 +45,9 @@ export default function DeveloperPage() {
   const inputRef = useRef(null);
   const groundTruthInputRef = useRef(null);
   const controllerRef = useRef(null);
+  const rawOutputText =
+    result?.extracted_text ??
+    "테스트 문서를 선택하고 분석을 실행하면 추출 결과가 표시됩니다.";
 
   async function runTest() {
     const validationError = validateFile(file);
@@ -277,13 +283,12 @@ export default function DeveloperPage() {
           <span>{result?.extraction_method ?? "NO DATA"}</span>
         </div>
         <div className="raw-text">
-          <div className="line-numbers">
-            1<br />2<br />3<br />4<br />5<br />6
+          <div className="line-numbers" aria-hidden="true">
+            {rawOutputText.split(/\r\n|\r|\n/).map((_, index) => (
+              <span key={index}>{index + 1}</span>
+            ))}
           </div>
-          <pre>
-            {result?.extracted_text ??
-              "테스트 문서를 선택하고 분석을 실행하면 추출 결과가 표시됩니다."}
-          </pre>
+          <pre>{rawOutputText}</pre>
         </div>
         <div className="download extraction-download">
           <div>
